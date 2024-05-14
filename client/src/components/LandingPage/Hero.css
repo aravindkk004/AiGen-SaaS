@@ -1,0 +1,20 @@
+span {
+    background: -webkit-linear-gradient(to right, #a993fe, #f43b86);
+    background: linear-gradient(to right, #a993fe, #f43b86);
+    background-clip: border-box;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-size: 4rem;
+    font-weight: bolder;
+}
+
+@media all and (max-width: 900px){
+    span{
+        font-size: 3rem;
+    }
+}
+@media all and (max-width: 650px){
+    span{
+        font-size: 2rem;
+    }
+}
