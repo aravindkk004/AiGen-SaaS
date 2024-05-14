@@ -2,8 +2,6 @@
 import { useState } from "react";
 import { BsImageAlt } from "react-icons/bs";
 import Image from "next/image";
-import { GoDownload } from "react-icons/go";
-import Link from "next/link";
 import { RiMenu2Fill } from "react-icons/ri";
 
 const BackgroundRemover = ({ openSidenav, username}) => {
@@ -29,7 +27,7 @@ const BackgroundRemover = ({ openSidenav, username}) => {
     formData.append("image", imageFile);
     setLoading(true);
     try {
-      const response = await fetch("http://127.0.0.1:5000/api/bgremover", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`, {
         method: "POST",
         body: formData,
       });

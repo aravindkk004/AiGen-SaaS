@@ -15,9 +15,9 @@ const VoiceGenerator = ({ openSidenav, username }) => {
     setLoading(true);
     setError("");
     setAudioLink("");
-    setText(""); // Reset audio link
+    setText(""); 
     try {
-      const response = await fetch(`http://127.0.0.1:5000/api/voiceGenerator`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/voiceGenerator`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
