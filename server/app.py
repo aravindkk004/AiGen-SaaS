@@ -7,7 +7,6 @@ from flask_bcrypt import Bcrypt
 import os
 from rembg import remove
 import uuid 
-import base64
 from PIL import Image
 from gtts import gTTS
 import pyttsx3
@@ -16,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "https://aravindkk-aigen-saas.vercel.app"}})
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -25,7 +24,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 bcrypt = Bcrypt(app)
 
 jwt_secret = os.getenv("JWT_SECRET")
-mongo_uri=os.getenv("MONGO_URI")
+mongo_uri = os.getenv("MONGO_URI")
 
 client = MongoClient(mongo_uri)
 
@@ -33,7 +32,7 @@ db = client.get_database("AiGen-SaaS")
 
 collection = db['users']
 
-app.config['BASE_URL'] = 'http://127.0.0.1:5000/uploads/'
+app.config['BASE_URL'] = 'https://aigen-saas-server.onrender.com/uploads/'
 
 @app.route("/api/register", methods=["POST"])
 def Register():
@@ -80,10 +79,9 @@ def Login():
 
     username = user.get('username')
 
-    token = jwt.encode({'email': email, 'username': username}, jwt_secret , algorithm='HS256')
+    token = jwt.encode({'email': email, 'username': username}, jwt_secret, algorithm='HS256')
 
     return jsonify({"message": "User logged in successfully", "token": token}), 200
-
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -129,25 +127,27 @@ def VoiceGen():
     gender = data.get('gender')
 
     if gender == "male":
-        audio_file_path = "temp_audio.wav" 
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path)) # Change file extension to WAV for pyttsx3
-        audio_file_url = url_for('static', filename=audio_file_path)
-
+        audio_file_path = "temp_audio.wav"
+        full_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path)
+        if os.path.exists(full_path):
+            os.remove(full_path)
         engine = pyttsx3.init()
         engine.setProperty('rate', 150)
         engine.setProperty('volume', 0.8)
-        engine.save_to_file(text, os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path))
+        engine.save_to_file(text, full_path)
         engine.runAndWait()
     else:
         audio_file_path = "temp_audio.mp3"
-        os.remove(os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path))
+        full_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path)
+        if os.path.exists(full_path):
+            os.remove(full_path)
         language = 'en'
-        speech = gTTS(text=text, lang=language, slow=False, tld="com.au")  
-        audio_file_url = url_for('static', filename=audio_file_path)
+        speech = gTTS(text=text, lang=language, slow=False, tld="com.au")
+        speech.save(full_path)
 
-        speech.save(os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path))
+    audio_file_url = url_for('static', filename=audio_file_path)
     return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))  # Default to port 10000 if PORT is not set
+    port = int(os.environ.get('PORT', 10000))  
     app.run(host='0.0.0.0', port=port, debug=True)
