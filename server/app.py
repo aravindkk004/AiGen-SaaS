@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
-CORS(app, resources={r"/api/*": {"origins": "https://aravindkk-aigen-saas.vercel.app"}})
+CORS(app, origins="https://aravindkk-aigen-saas.vercel.app")
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -149,5 +149,5 @@ def VoiceGen():
     return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))  
+    port = int(os.environ.get('PORT', 10000))  # Default to port 10000 if PORT is not set
     app.run(host='0.0.0.0', port=port, debug=True)
