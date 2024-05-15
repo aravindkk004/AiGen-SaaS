@@ -149,4 +149,5 @@ def VoiceGen():
     return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 10000))  # Default to port 10000 if PORT is not set
+    app.run(host='0.0.0.0', port=port, debug=True)
