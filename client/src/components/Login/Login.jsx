@@ -18,7 +18,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post("http://127.0.0.1:5000/api/login", {
+      const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/login`, {
         email: email,
         password: password,
       });
