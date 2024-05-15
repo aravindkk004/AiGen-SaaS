@@ -3,6 +3,7 @@ import { useState } from "react";
 import { BsImageAlt } from "react-icons/bs";
 import Image from "next/image";
 import { RiMenu2Fill } from "react-icons/ri";
+import axios from "axios"
 
 const BackgroundRemover = ({ openSidenav, username}) => {
   const [fileName, setFileName] = useState("");
@@ -27,26 +28,25 @@ const BackgroundRemover = ({ openSidenav, username}) => {
     formData.append("image", imageFile);
     setLoading(true);
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`, {
-        method: "POST",
-        body: formData,
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/voiceGenerator`, {
+        text: text,
+        gender: gender,
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
 
-      if (!response.ok) {
-        throw new Error("Error removing background");
+      if (response.status !== 200) {
+        setError(response.data.message || "An error occurred");
+      } else {
+        setAudioLink(response.data.audio_url);
       }
-
-      const responseData = await response.json();
-      console.log("img url", responseData.image_url);
-      setBgRemovedImageUrl(responseData.image_url);
-      setError("");
-      setFileName("");
-      setImageFile("");
-      setLoading(false);
     } catch (error) {
-      setError("Error removing background");
-      console.error("Error removing background:", error);
+      setError(error.message || "An error occurred");
+    } finally {
       setLoading(false);
+      setText("");
     }
   };
 
