@@ -94,7 +94,7 @@ const CodeGenerator = ({ openSidenav, username}) => {
         </div>
         {response ? (
           <div className="w-full flex justify-center">
-            <div className="w-[95%] mt-4 p-4 bg-gray-100 rounded-lg">
+            <div className="w-[95%] mt-4 p-4 bg-gray-100 rounded-lg overflow-x-scroll">
               <pre>{response}</pre>
             </div>
           </div>

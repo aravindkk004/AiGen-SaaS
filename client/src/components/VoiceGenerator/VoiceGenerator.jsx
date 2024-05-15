@@ -3,6 +3,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { MdKeyboardVoice } from "react-icons/md";
 import { RiMenu2Fill } from "react-icons/ri";
+import axios from "axios";
 
 const VoiceGenerator = ({ openSidenav, username }) => {
   const [text, setText] = useState("");
