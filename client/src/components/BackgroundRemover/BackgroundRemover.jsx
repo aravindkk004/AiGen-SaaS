@@ -28,25 +28,27 @@ const BackgroundRemover = ({ openSidenav, username}) => {
     formData.append("image", imageFile);
     setLoading(true);
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/voiceGenerator`, {
-        text: text,
-        gender: gender,
-      }, {
+      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`, formData, {
         headers: {
-          "Content-Type": "application/json",
-        },
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       if (response.status !== 200) {
-        setError(response.data.message || "An error occurred");
-      } else {
-        setAudioLink(response.data.audio_url);
+        throw new Error("Error removing background");
       }
-    } catch (error) {
-      setError(error.message || "An error occurred");
-    } finally {
+
+      const responseData = response.data;
+      console.log("img url", responseData.image_url);
+      setBgRemovedImageUrl(responseData.image_url);
+      setError("");
+      setFileName("");
+      setImageFile(null);
       setLoading(false);
-      setText("");
+    } catch (error) {
+      setError("Error removing background");
+      console.error("Error removing background:", error);
+      setLoading(false);
     }
   };
 

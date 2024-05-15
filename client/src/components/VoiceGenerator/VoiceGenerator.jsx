@@ -15,30 +15,31 @@ const VoiceGenerator = ({ openSidenav, username }) => {
     setLoading(true);
     setError("");
     setAudioLink("");
-    setText(""); 
+    setText("");
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/voiceGenerator`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/voiceGenerator`,
+        {
           text: text,
           gender: gender,
-        }),
-      });
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.message || "An error occurred");
+      if (response.status !== 200) {
+        setError(response.data.message || "An error occurred");
       } else {
-        const data = await response.json();
-        setAudioLink(data.audio_url);
+        setAudioLink(response.data.audio_url);
       }
     } catch (error) {
       setError(error.message || "An error occurred");
     } finally {
       setLoading(false);
+      setText("");
     }
   };
   const handleButtonClick = () => {
