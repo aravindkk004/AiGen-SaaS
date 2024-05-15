@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, send_file
-from flask_cors import CORS
+# from flask_cors import CORS
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash
 import jwt
@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
-CORS(app, origins="*")
+# CORS(app, origins="*")
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
