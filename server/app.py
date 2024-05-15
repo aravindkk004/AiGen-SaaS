@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
-CORS(app, origins="https://aravindkk-aigen-saas.vercel.app")
+CORS(app, origins="*")
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
