@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
-# CORS(app, origins="*")
+CORS(app, origins="*")
 CORS(app, support_credentials=True)
 
 UPLOAD_FOLDER = 'uploads'

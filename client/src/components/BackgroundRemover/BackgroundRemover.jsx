@@ -28,24 +28,25 @@ const BackgroundRemover = ({ openSidenav, username}) => {
     formData.append("image", imageFile);
     setLoading(true);
     try {
-      const response = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+      const formData = new FormData();
+      formData.append('file', imageFile);
+
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`, {
+        method: 'POST',
+        body: formData,
       });
 
-      if (response.status !== 200) {
-        throw new Error("Error removing background");
+      if (!res.ok) {
+        throw new Error('Error removing background');
       }
 
-      const responseData = response.data;
+      const responseData = await res.json();
       console.log("img url", responseData.image_url);
       setBgRemovedImageUrl(responseData.image_url);
-      setError("");
-      setFileName("");
+      setFileName('');
       setImageFile(null);
       setLoading(false);
-    } catch (error) {
+    }catch (error) {
       setError("Error removing background");
       console.error("Error removing background:", error);
       setLoading(false);
