@@ -3,9 +3,9 @@ import { useState } from "react";
 import { BsImageAlt } from "react-icons/bs";
 import Image from "next/image";
 import { RiMenu2Fill } from "react-icons/ri";
-import axios from "axios"
+import axios from "axios";
 
-const BackgroundRemover = ({ openSidenav, username}) => {
+const BackgroundRemover = ({ openSidenav, username }) => {
   const [fileName, setFileName] = useState("");
   const [imageFile, setImageFile] = useState(null);
   const [bgRemovedImageUrl, setBgRemovedImageUrl] = useState("");
@@ -29,24 +29,30 @@ const BackgroundRemover = ({ openSidenav, username}) => {
     setLoading(true);
     try {
       const formData = new FormData();
-      formData.append('file', imageFile);
+      formData.append("file", imageFile);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`, {
-        method: 'POST',
-        body: formData,
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/bgremover`,
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
 
       if (!res.ok) {
-        throw new Error('Error removing background');
+        throw new Error("Error removing background");
       }
 
       const responseData = await res.json();
       console.log("img url", responseData.image_url);
       setBgRemovedImageUrl(responseData.image_url);
-      setFileName('');
+      setFileName("");
       setImageFile(null);
       setLoading(false);
-    }catch (error) {
+    } catch (error) {
       setError("Error removing background");
       console.error("Error removing background:", error);
       setLoading(false);
@@ -60,10 +66,7 @@ const BackgroundRemover = ({ openSidenav, username}) => {
   return (
     <>
       <div className="px-2">
-      <button
-          type="button"
-          className="sm:hidden"
-        >
+        <button type="button" className="sm:hidden">
           <RiMenu2Fill
             className="text-black m-3"
             size={30}
@@ -84,7 +87,9 @@ const BackgroundRemover = ({ openSidenav, username}) => {
             size={50}
           />
           <div>
-            <h2 className="sm:text-2xl text-xl font-bold">Background Remover</h2>
+            <h2 className="sm:text-2xl text-xl font-bold">
+              Background Remover
+            </h2>
             <p className="text-zinc-600 sm:text-lg text-sm">
               Upload an image and remove the background
             </p>
