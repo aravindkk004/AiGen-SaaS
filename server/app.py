@@ -11,12 +11,13 @@ from PIL import Image
 from gtts import gTTS
 import pyttsx3
 from dotenv import load_dotenv
+from flask_socketio import SocketIO, emit
 
 load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
 CORS(app, origins="*")
-CORS(app, support_credentials=True)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
@@ -153,5 +154,5 @@ def VoiceGen():
     return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))  
-    app.run(host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get('PORT', 10000))
+    socketio.run(app, host='0.0.0.0', port=port, debug=True)
