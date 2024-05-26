@@ -17,7 +17,7 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
 CORS(app, origins="*")
-socketio = SocketIO(app, async_mode='eventlet') 
+socketio = SocketIO(app, async_mode='eventlet')
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
