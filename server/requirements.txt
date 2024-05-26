@@ -9,7 +9,7 @@ colorama==0.4.6
 coloredlogs==15.0.1
 dnspython==2.6.1
 Flask==3.0.3
-python-socketio==5.5.3
+python-socketio==5.6.1
 flask-socketio==5.2.1
 Flask-Bcrypt==1.0.1
 Flask-Cors==4.0.1
