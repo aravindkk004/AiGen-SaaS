@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, url_for, send_file
-# from flask_cors import CORS
+from flask_cors import CORS, cross_origin
 from pymongo import MongoClient
 from werkzeug.security import check_password_hash
 import jwt
@@ -16,10 +16,12 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='uploads')
 # CORS(app, origins="*")
+CORS(app, support_credentials=True)
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['CORS_HEADERS'] = 'application/json'
 
 bcrypt = Bcrypt(app)
 
@@ -87,6 +89,7 @@ def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/api/bgremover", methods=["POST"])
+@cross_origin(origin='*')
 def remove_bg():
     if 'image' not in request.files:
         return jsonify({'error': 'No image provided'}), 400
@@ -121,6 +124,7 @@ def remove_bg():
         return jsonify({'error': 'Failed to remove background', 'message': str(e)}), 500
 
 @app.route("/api/voiceGenerator", methods=["POST"])
+@cross_origin(origin='*')
 def VoiceGen():
     data = request.json
     text = data.get('text')
@@ -149,5 +153,5 @@ def VoiceGen():
     return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))  # Default to port 10000 if PORT is not set
+    port = int(os.environ.get('PORT', 10000))  
     app.run(host='0.0.0.0', port=port, debug=True)
