@@ -132,7 +132,7 @@ const BackgroundRemover = ({ openSidenav, username}) => {
           </div>
         </div>
         {bgRemovedImageUrl ? (
-          <div className="w-full mt-10 px-8">
+          <div className="w-full my-10 px-8">
             <div className="flex items-center justify-between mb-3">
               <h3 className="sm:text-2xl text-xl font-extrabold mb-2 ">
                 Background Removed Image

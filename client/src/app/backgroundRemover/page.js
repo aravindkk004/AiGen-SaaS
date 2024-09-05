@@ -46,7 +46,7 @@ export default function Home() {
             openSidenav={handleOpenSidenav}
           />
         </div>
-        <div className="lg:w-[80%] w-full">
+        <div className="lg:w-[80%] w-full overflow-y-scroll">
             <BackgroundRemover openSidenav={handleOpenSidenav} username={username}/>
           </div>
         </div>

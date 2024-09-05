@@ -153,6 +153,10 @@ def VoiceGen():
     audio_file_url = url_for('static', filename=audio_file_path)
     return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
 
+# if __name__ == '__main__':
+#     port = int(os.environ.get('PORT', 10000))
+#     socketio.run(app, host='0.0.0.0', port=port, debug=True)
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 10000))
-    socketio.run(app, host='0.0.0.0', port=port, debug=True)
+    port = int(os.environ.get('PORT', 5000))  # Default to port 5000
+    socketio.run(app, host='127.0.0.1', port=port, debug=True)  # Bind to localhost
+
