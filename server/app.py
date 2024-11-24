@@ -21,8 +21,13 @@ socketio = SocketIO(app, async_mode='eventlet')
 
 UPLOAD_FOLDER = 'uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+# app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['CORS_HEADERS'] = 'application/json'
+
+app.config['UPLOAD_FOLDER'] = "./static/uploads"
+app.config['BASE_URL'] = "http://127.0.0.1:5000/static/uploads/"
+
+
 
 bcrypt = Bcrypt(app)
 
@@ -35,7 +40,7 @@ db = client.get_database("AiGen-SaaS")
 
 collection = db['users']
 
-app.config['BASE_URL'] = 'https://aigen-saas-server.onrender.com/uploads/'
+# app.config['BASE_URL'] = 'https://aigen-saas-server.onrender.com/uploads/'
 
 @app.route("/api/register", methods=["POST"])
 def Register():
@@ -127,31 +132,50 @@ def remove_bg():
 @app.route("/api/voiceGenerator", methods=["POST"])
 @cross_origin(origin='*')
 def VoiceGen():
-    data = request.json
-    text = data.get('text')
-    gender = data.get('gender')
+    try:
+        data = request.json
+        text = data.get('text')
+        gender = data.get('gender')
 
-    if gender == "male":
-        audio_file_path = "temp_audio.wav"
+        if not text or not gender:
+            return jsonify({"message": "Invalid input: 'text' and 'gender' are required"}), 400
+
+        print("Text:", text)
+        print("Gender:", gender)
+
+        if gender == "male":
+            audio_file_path = "temp_audio.wav"
+        else:
+            audio_file_path = "temp_audio.mp3"
+
         full_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path)
+
+        # Remove existing file if present
         if os.path.exists(full_path):
             os.remove(full_path)
-        engine = pyttsx3.init()
-        engine.setProperty('rate', 150)
-        engine.setProperty('volume', 0.8)
-        engine.save_to_file(text, full_path)
-        engine.runAndWait()
-    else:
-        audio_file_path = "temp_audio.mp3"
-        full_path = os.path.join(app.config['UPLOAD_FOLDER'], audio_file_path)
-        if os.path.exists(full_path):
-            os.remove(full_path)
-        language = 'en'
-        speech = gTTS(text=text, lang=language, slow=False, tld="com.au")
-        speech.save(full_path)
 
-    audio_file_url = url_for('static', filename=audio_file_path)
-    return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
+        # Generate audio file
+        if gender == "male":
+            engine = pyttsx3.init()
+            engine.setProperty('rate', 150)
+            engine.setProperty('volume', 0.8)
+            engine.save_to_file(text, full_path)
+            engine.runAndWait()
+        else:
+            language = 'en'
+            speech = gTTS(text=text, lang=language, slow=False, tld="com.au")
+            speech.save(full_path)
+
+        # Return the audio file URL
+        audio_file_url = f"http://127.0.0.1:5000/static/uploads/{audio_file_path}"
+
+        return jsonify({"audio_url": app.config['BASE_URL'] + audio_file_path})
+    
+    except Exception as e:
+        # Log the error for debugging
+        print("Error:", str(e))
+        return jsonify({"message": "Internal Server Error", "error": str(e)}), 500
+
 
 # if __name__ == '__main__':
 #     port = int(os.environ.get('PORT', 10000))

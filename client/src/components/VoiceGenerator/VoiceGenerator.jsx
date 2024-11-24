@@ -19,7 +19,7 @@ const VoiceGenerator = ({ openSidenav, username }) => {
     setText("");
     try {
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/voiceGenerator`,
+        `http://localhost:3000/api/voiceGenerator/`,
         {
           text: text,
           gender: gender,
@@ -28,13 +28,16 @@ const VoiceGenerator = ({ openSidenav, username }) => {
           headers: {
             "Content-Type": "application/json",
           },
+          responseType: "blob",
         }
       );
 
       if (response.status !== 200) {
         setError(response.data.message || "An error occurred");
       } else {
-        setAudioLink(response.data.audio_url);
+        console.log(response.data.audioUrl);
+        const audioUrl = URL.createObjectURL(response.data);
+        setAudioLink(audioUrl);
       }
     } catch (error) {
       setError(error.message || "An error occurred");
@@ -104,8 +107,17 @@ const VoiceGenerator = ({ openSidenav, username }) => {
         </div>
         {audioLink ? (
           <div className="w-full flex justify-center">
-            <audio controls className="w-[95%] mt-5">
+            {/* <audio controls className="w-[95%] mt-5">
               <source src={audioLink} type="audio/mp3" />
+              Your browser does not support the audio element.
+            </audio> */}
+            <audio
+              controls
+              preload="auto"
+              className="w-[95%] mt-5"
+              crossOrigin="*"
+            >
+              <source src={audioLink} type="audio/mpeg" />
               Your browser does not support the audio element.
             </audio>
           </div>
