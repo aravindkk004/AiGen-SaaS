@@ -15,8 +15,9 @@ from flask_socketio import SocketIO, emit
 
 load_dotenv()
 
-app = Flask(__name__, static_folder='uploads')
-CORS(app, origins="*")
+# app = Flask(__name__, static_folder='uploads')
+app = Flask(__name__)
+CORS(app, resources={r"/*": {"origins": "*"}})
 socketio = SocketIO(app, async_mode='eventlet')
 
 UPLOAD_FOLDER = 'uploads'

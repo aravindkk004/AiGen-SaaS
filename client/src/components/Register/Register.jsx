@@ -19,16 +19,26 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(`${process.env.NEXT_PUBLIC_BASE_URL}/api/register`, {
-        username: username,
-        email: email,
-        password: password,
-      });
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/register`,
+        {
+          username: username,
+          email: email,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json", // Specify content type
+            "Access-Control-Allow-Origin": "*", // Allow access from all origins
+          },
+        }
+      );
+
       if (res.status !== 201) {
         setError(res.data.message);
       }
       setLoading(false);
-      router.replace("/login")
+      router.replace("/login");
     } catch (error) {
       setError(error);
       setLoading(false);
